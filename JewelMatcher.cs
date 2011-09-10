@@ -388,7 +388,7 @@ namespace WudiLabs.AutoJewel
         }
 
         /// <summary>
-        /// 水平翻转一个匹配
+        /// 垂直翻转一个匹配
         /// </summary>
         /// <param name="pattern_sl">单行的匹配描述</param>
         /// <returns>翻转完的匹配</returns>
@@ -524,6 +524,9 @@ namespace WudiLabs.AutoJewel
             return jewel_color;
         }
 
+        private int last_method_0_top_row = 0;
+        private int last_method_0_top_col = 0;
+
         /// <summary>
         /// 处理各种颜色的宝石
         /// </summary>
@@ -551,6 +554,21 @@ namespace WudiLabs.AutoJewel
                 {
                     method.MatchPattern.Priority += 2 * (ROW_COUNT - method.LeftTopRowIndex);
                 }
+                else
+                {
+                    if (method.LeftTopRowIndex - last_method_0_top_row >= 3)
+                    {
+//                        method.MatchPattern.Priority += (int)Math.Round(random.NextDouble() * 1);
+                        method.MatchPattern.Priority += 1;
+                    }
+
+                    if ((last_method_0_top_col < (COL_COUNT / 2) && method.LeftTopColIndex >= (COL_COUNT / 2)) ||
+                        (last_method_0_top_col >= (COL_COUNT / 2) && method.LeftTopColIndex < (COL_COUNT / 2)))
+                    {
+//                        method.MatchPattern.Priority += (int)Math.Round(random.NextDouble() * 2);
+                        method.MatchPattern.Priority += 2;
+                    }
+                }
             }
 
             methods.Sort(m_solve_method_cmp);
@@ -572,6 +590,9 @@ namespace WudiLabs.AutoJewel
                 (m_board_top_real + (m_jewel_width / 2)
                 + ((method_0.LeftTopRowIndex + (method_0.MatchPattern.MoveDst / side_len)) * m_jewel_height))
             );
+
+            last_method_0_top_row = method_0.LeftTopRowIndex;
+            last_method_0_top_col = method_0.LeftTopColIndex;
 
             return new Solution(point_src, point_dst, method_0);
         }
